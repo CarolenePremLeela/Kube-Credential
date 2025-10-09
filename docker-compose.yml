@@ -1,42 +1,44 @@
-# docker-compose.yml
 version: '3.8'
-
 services:
-  # Issuance Service
-  issuance-service:
+  mysql:
+    image: mariadb:10.11
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: kube_credential
+    ports:
+      - '3306:3306'
+    volumes:
+      - db_data:/var/lib/mysql
+  issuance:
     build: ./backend/issuance-service
-    ports:
-      - "3001:3001"
     environment:
-      - NODE_ENV=production
-      - PORT=3001
-      - DATABASE_URL=./data/issuance.db
-      - POD_NAME=issuance-pod-1
-    volumes:
-      - issuance-data:/app/data
-
-  # Verification Service  
-  verification-service:
+      DB_HOST: mysql
+      DB_USER: root
+      DB_PASSWORD: example
+      DB_DATABASE: kube_credential
+      ISSUANCE_PORT: 4000
+    depends_on:
+      - mysql
+    ports:
+      - '4000:4000'
+  verification:
     build: ./backend/verification-service
-    ports:
-      - "3002:3002"
     environment:
-      - NODE_ENV=production
-      - PORT=3002
-      - DATABASE_URL=./data/verification.db
-      - POD_NAME=verification-pod-1
-    volumes:
-      - verification-data:/app/data
-
-  # Frontend
+      DB_HOST: mysql
+      DB_USER: root
+      DB_PASSWORD: example
+      DB_DATABASE: kube_credential
+      VERIFICATION_PORT: 5000
+    depends_on:
+      - mysql
+    ports:
+      - '5000:5000'
   frontend:
     build: ./frontend
     ports:
-      - "80:80"
+      - '8080:80'
     depends_on:
-      - issuance-service
-      - verification-service
-
+      - issuance
+      - verification
 volumes:
-  issuance-data:
-  verification-data:
+  db_data:

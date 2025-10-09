@@ -12,6 +12,26 @@
 
 **Kube Credential** is a microservice-based system designed to issue and verify credentials securely.
 It demonstrates scalable, containerized deployment using **Docker**, **TypeScript**, **MySQL**, and **Kubernetes (AWS EKS)**.
+## Structure
+- `backend/issuance-service` - issuance API
+- `backend/verification-service` - verification API
+- `backend/shared` - shared types and DB
+- `frontend` - simple React UI
+- `k8s-manifests` - Kubernetes manifests
+- `docker-compose.yml` - local development with MariaDB
+
+## Run locally (docker-compose)
+
+1. `docker-compose up --build`
+2. Frontend will be available at `http://localhost:8080`
+3. Issuance at `http://localhost:4000/issuance`
+4. Verification at `http://localhost:5000/verification`
+
+## Notes & next steps:
+- Replace example DB credentials before deploying to production.
+- Consider adding readiness/liveness endpoints and a migration system (Flyway / Knex migrations / Prisma).
+- For production K8s, push images to a registry and change image names in manifests.
+- Add TLS to the ingress and a real domain.
 
 The system includes:
 
@@ -127,43 +147,90 @@ Start React frontend on port 5173
 ## 🧱 Project Structure
 
 ```
-kube-credential/
-│
+Kube-Credential/
 ├── backend/
-│   ├── issuance/
+|   ├── shared/
+│   |   ├── database/
+│   |   │   ├── connection.ts          
+│   |   │   └── models/
+│   |   │       └── credential.ts      
+│   |   ├── types/
+│   |   │   └── credential.ts          
+│   |   └── utils/
+│   |       └── helpers.ts
+│   ├── issuance-service/
 │   │   ├── src/
-│   │   │   ├── index.ts
-│   │   │   ├── routes/
 │   │   │   ├── controllers/
-│   │   │   └── db.ts
-│   │   ├── Dockerfile
-│   │   └── package.json
-│   ├── verification/
-│   │   ├── src/
-│   │   │   ├── index.ts
+│   │   │   │   └── issuanceController.ts
+│   │   │   ├── models/
+│   │   │   │   └── credential.ts
 │   │   │   ├── routes/
-│   │   │   ├── controllers/
-│   │   │   └── db.ts
+│   │   │   │   └── issuanceRoutes.ts
+│   │   │   ├── services/
+│   │   │   │   └── issuanceService.ts
+│   │   │   ├── utils/
+│   │   │   │   └── workerId.ts
+│   │   │   └── index.ts
+│   │   ├── tests/
+│   │   │   └── issuance.test.ts
+│   │   ├── package.json
+│   │   ├── tsconfig.json
 │   │   ├── Dockerfile
-│   │   └── package.json
-│   └── docker-compose.yml
-│
+│   │   └── .dockerignore
+│   └── verification-service/
+│       ├── src/
+│       │   ├── controllers/
+│       │   │   └── verificationController.ts
+│       │   ├── models/
+│       │   │   └── credential.ts
+│       │   ├── routes/
+│       │   │   └── verificationRoutes.ts
+│       │   ├── services/
+│       │   │   └── verificationService.ts
+│       │   ├── utils/
+│       │   │   └── workerId.ts
+│       │   └── index.ts
+│       ├── tests/
+│       │   └── verification.test.ts
+│       ├── package.json
+│       ├── tsconfig.json
+│       ├── Dockerfile
+│       └── .dockerignore
 ├── frontend/
 │   ├── src/
-│   │   ├── pages/
-│   │   │   ├── IssuePage.tsx
-│   │   │   └── VerifyPage.tsx
 │   │   ├── components/
-│   │   └── App.tsx
+│   │   │   ├── IssuanceForm.tsx
+│   │   │   └── VerificationForm.tsx
+│   │   ├── pages/
+│   │   │   ├── IssuancePage.tsx
+│   │   │   └── VerificationPage.tsx
+│   │   ├── services/
+│   │   │   ├── api.ts
+│   │   │   ├── issuanceService.ts
+│   │   │   └── verificationService.ts
+│   │   ├── types/
+│   │   │   └── credential.ts
+│   │   ├── App.tsx
+│   │   └── main.tsx
+│   ├── tests/
+│   │   ├── IssuancePage.test.tsx
+│   │   └── VerificationPage.test.tsx
+|   ├── index.html
+│   ├── package.json
+│   ├── vite.config.ts
+│   ├── tsconfig.json
 │   ├── Dockerfile
-│   └── package.json
-│
-└── k8s/
-    ├── issuance-deployment.yaml
-    ├── verification-deployment.yaml
-    ├── issuance-service.yaml
-    ├── verification-service.yaml
-    └── ingress.yaml
+│   ├── nginx.conf
+│   └── .dockerignore
+├── k8s-manifests/
+│   ├── issuance-deployment.yaml
+│   ├── verification-deployment.yaml
+│   ├── frontend-deployment.yaml
+│   ├── services.yaml
+│   └── ingress.yaml
+├── docker-compose.yml
+├── .gitignore
+└── README.md
 ```
 
 ---

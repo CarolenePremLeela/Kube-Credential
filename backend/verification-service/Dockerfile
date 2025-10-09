@@ -1,0 +1,21 @@
+// -----------------------------
+    // Files: backend/verification-service/Dockerfile
+    // -----------------------------
+    # Use a lightweight Node image
+    FROM node:20-alpine AS build
+    WORKDIR /app
+    COPY package.json package-lock.json* ./
+    RUN npm ci --only=production
+    COPY . ./
+    RUN npm run build
+    
+    
+    FROM node:20-alpine
+    WORKDIR /app
+    COPY --from=build /app/dist ./dist
+    COPY package.json ./
+    RUN npm ci --only=production
+    ENV NODE_ENV=production
+    EXPOSE 5000
+    CMD ["node", "dist/index.js"]
+    
