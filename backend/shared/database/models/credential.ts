@@ -1,36 +1,68 @@
-// File: backend/shared/database/models/credential.ts
-import { getPool } from '../connection';
-import type { Credential } from '../../types/credential';
+import { createDbConnection } from '../connection';
 
-export const createCredential = async (c: Omit<Credential, 'id' | 'createdAt' | 'updatedAt'>) => {
-  const pool = getPool();
-  const [result] = await pool.query(
-    'INSERT INTO credentials (name, kube_config, metadata) VALUES (?, ?, ?)',
-    [c.name, c.kubeConfig, JSON.stringify(c.metadata || null)]
-  );
-  // @ts-ignore
-  const insertId = (result as any).insertId;
-  return { ...c, id: insertId } as Credential;
+export interface Credential {
+  id: string;
+  email: string;
+  credential_type: string;
+  credential_data: any;
+  worker_id: string;
+  issued_at: Date;
+}
+
+export const CredentialModel = {
+  async create(credentialData: Omit<Credential, 'id' | 'issued_at'>): Promise<Credential> {
+    const connection = await createDbConnection();
+    try {
+      const id = require('crypto').randomUUID();
+      
+      const [result] = await connection.execute(
+        `INSERT INTO credentials (id, email, credential_type, credential_data, worker_id) 
+         VALUES (?, ?, ?, ?, ?)`,
+        [id, credentialData.email, credentialData.credential_type, 
+         JSON.stringify(credentialData.credential_data), credentialData.worker_id]
+      );
+      
+      const [rows] = await connection.execute(
+        'SELECT * FROM credentials WHERE id = ?',
+        [id]
+      );
+      
+      return (rows as any[])[0];
+    } catch (error: any) {
+      if (error.code === 'ER_DUP_ENTRY') {
+        throw new Error('Credential already issued for this email and type');
+      }
+      throw error;
+    } finally {
+      await connection.end();
+    }
+  },
+
+  async findById(id: string): Promise<Credential | null> {
+    const connection = await createDbConnection();
+    try {
+      const [rows] = await connection.execute(
+        'SELECT * FROM credentials WHERE id = ?',
+        [id]
+      );
+      
+      return (rows as any[])[0] || null;
+    } finally {
+      await connection.end();
+    }
+  },
+
+  async findByEmailAndType(email: string, credentialType: string): Promise<Credential | null> {
+    const connection = await createDbConnection();
+    try {
+      const [rows] = await connection.execute(
+        'SELECT * FROM credentials WHERE email = ? AND credential_type = ?',
+        [email, credentialType]
+      );
+      
+      return (rows as any[])[0] || null;
+    } finally {
+      await connection.end();
+    }
+  }
 };
-
-export const getCredentialById = async (id: number) => {
-  const pool = getPool();
-  const [rows] = await pool.query('SELECT * FROM credentials WHERE id = ?', [id]);
-  // @ts-ignore
-  return (rows as any[])[0] || null;
-};
-
-export const listCredentials = async (limit = 50, offset = 0) => {
-  const pool = getPool();
-  const [rows] = await pool.query('SELECT * FROM credentials ORDER BY created_at DESC LIMIT ? OFFSET ?', [Number(limit), Number(offset)]);
-  // @ts-ignore
-  return rows as any[];
-};
-
-export const deleteCredential = async (id: number) => {
-  const pool = getPool();
-  await pool.query('DELETE FROM credentials WHERE id = ?', [id]);
-  return;
-};
-
-

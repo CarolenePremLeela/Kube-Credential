@@ -1,13 +1,24 @@
-// File: backend/shared/types/credential.ts
-export type Metadata = Record<string, any> | null;
-
-export interface Credential {
-  id: number;
-  name: string;
-  kubeConfig: string; // YAML/JSON string of kubeconfig
-  metadata?: Metadata;
-  createdAt?: string | Date;
-  updatedAt?: string | Date;
+export interface CredentialRequest {
+  email: string;
+  credentialType: string;
+  data: any;
 }
 
+export interface CredentialResponse {
+  id: string;
+  email: string;
+  credentialType: string;
+  workerId: string;
+  issuedAt: Date;
+}
 
+export interface VerificationRequest {
+  credentialId: string;
+}
+
+export interface VerificationResponse {
+  valid: boolean;
+  workerId?: string;
+  timestamp?: Date;
+  credential?: any;
+}

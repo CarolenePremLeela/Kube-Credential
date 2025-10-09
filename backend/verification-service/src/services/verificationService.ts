@@ -1,7 +1,7 @@
 // -----------------------------
 // Files: backend/verification-service/src/services/verificationService.ts
 // -----------------------------
-import { initDB } from '../../shared/database/connection';
+import { initDB } from '../../../shared/database/connection';
 
 export const startVerificationService = async () => {
   await initDB();

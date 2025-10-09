@@ -1,8 +1,8 @@
 // -----------------------------
 // Files: backend/issuance-service/src/services/issuanceService.ts
 // -----------------------------
-import { initDB } from '../../shared/database/connection';
-import { createCredential as createCredentialModel } from '../../shared/database/models/credential';
+import { initDB } from '../../../shared/database/connection';
+import { createCredential as createCredentialModel } from '../../../shared/database/models/credential';
 
 export const startIssuanceService = async () => {
   await initDB();

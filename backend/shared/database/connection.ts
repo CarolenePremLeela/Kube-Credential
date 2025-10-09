@@ -1,54 +1,46 @@
-// File: backend/shared/database/connection.ts
 import mysql from 'mysql2/promise';
-import type { Pool } from 'mysql2/promise';
+import dotenv from 'dotenv';
 
-const {
-  DB_HOST = 'localhost',
-  DB_PORT = '3306',
-  DB_USER = 'root',
-  DB_PASSWORD = '',
-  DB_DATABASE = 'kube_credential',
-} = process.env;
+dotenv.config();
 
-let pool: Pool | null = null;
-
-export const initDB = async () => {
-  if (pool) return pool;
-  pool = mysql.createPool({
-    host: DB_HOST,
-    port: Number(DB_PORT),
-    user: DB_USER,
-    password: DB_PASSWORD,
-    database: DB_DATABASE,
-    waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0,
-  });
-
-  // Optionally create table if not exists (safe in dev)
-  await pool.query(`
-    CREATE TABLE IF NOT EXISTS credentials (
-      id INT AUTO_INCREMENT PRIMARY KEY,
-      name VARCHAR(191) NOT NULL,
-      kube_config TEXT NOT NULL,
-      metadata JSON NULL,
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-    );
-  `);
-
-  return pool;
+export const createDbConnection = async () => {
+  try {
+    const connection = await mysql.createConnection({
+      host: process.env.DB_HOST || 'localhost',
+      user: process.env.DB_USER || 'root',
+      password: process.env.DB_PASSWORD || 'password',
+      database: process.env.DB_NAME || 'kube_credential_db',
+      port: parseInt(process.env.DB_PORT || '3306')
+    });
+    
+    console.log('Connected to MySQL database');
+    return connection;
+  } catch (error) {
+    console.error('Database connection failed:', error);
+    throw error;
+  }
 };
 
-export const getPool = () => {
-  if (!pool) throw new Error('Database pool not initialized. Call initDB() first.');
-  return pool;
+export const initializeDatabase = async () => {
+  const connection = await createDbConnection();
+  
+  try {
+    await connection.execute(`
+      CREATE TABLE IF NOT EXISTS credentials (
+        id VARCHAR(36) PRIMARY KEY,
+        email VARCHAR(255) NOT NULL,
+        credential_type VARCHAR(100) NOT NULL,
+        credential_data JSON NOT NULL,
+        worker_id VARCHAR(100) NOT NULL,
+        issued_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        UNIQUE KEY unique_credential (email, credential_type)
+      )
+    `);
+    console.log('Database tables initialized');
+  } catch (error) {
+    console.error('Table creation failed:', error);
+    throw error;
+  } finally {
+    await connection.end();
+  }
 };
-
-export const closeDB = async () => {
-  if (!pool) return;
-  await pool.end();
-  pool = null;
-};
-
-

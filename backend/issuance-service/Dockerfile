@@ -1,17 +1,28 @@
-  # Use a lightweight Node image
-        FROM node:20-alpine AS build
-        WORKDIR /app
-        COPY package.json package-lock.json* ./
-        RUN npm ci --only=production
-        COPY . ./
-        RUN npm run build
-        
-        
-        FROM node:20-alpine
-        WORKDIR /app
-        COPY --from=build /app/dist ./dist
-        COPY package.json ./
-        RUN npm ci --only=production
-        ENV NODE_ENV=production
-        EXPOSE 4000
-        CMD ["node", "dist/index.js"]
+FROM node:18-alpine
+WORKDIR /app
+
+# Copy package files first for better caching
+COPY package*.json ./
+RUN npm install
+
+# Copy source code
+COPY src/ ./src/
+
+# Create shared directory structure
+RUN mkdir -p shared/database/models shared/types
+
+# Copy shared database files
+COPY ../shared/database/connection.ts ./shared/database/
+COPY ../shared/database/models/Credential.ts ./shared/database/models/
+
+# Copy shared types
+COPY ../shared/types/Credential.ts ./shared/types/
+
+# Copy TypeScript config
+COPY ../tsconfig.json ./
+
+RUN npm run build
+
+EXPOSE 3001
+
+CMD ["npm", "start"]

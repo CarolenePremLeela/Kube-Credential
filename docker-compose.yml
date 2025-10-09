@@ -1,44 +1,65 @@
-version: '3.8'
 services:
   mysql:
-    image: mariadb:10.11
+    image: mysql:8.0
+    container_name: kube_credential_mysql
     environment:
-      MYSQL_ROOT_PASSWORD: example
-      MYSQL_DATABASE: kube_credential
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: kube_credential_db
+      MYSQL_USER: app_user
+      MYSQL_PASSWORD: app_password
     ports:
-      - '3306:3306'
+      - "3306:3306"
     volumes:
-      - db_data:/var/lib/mysql
-  issuance:
-    build: ./backend/issuance-service
+      - mysql_data:/var/lib/mysql
+    networks:
+      - kube_credential_network
+
+  issuance-service:
+    build: ./backend/issuance-service  # ← DIRECT PATH
+    container_name: issuance_service
     environment:
       DB_HOST: mysql
-      DB_USER: root
-      DB_PASSWORD: example
-      DB_DATABASE: kube_credential
-      ISSUANCE_PORT: 4000
+      DB_USER: app_user
+      DB_PASSWORD: app_password
+      DB_NAME: kube_credential_db
+      PORT: 3001
+    ports:
+      - "3001:3001"
     depends_on:
       - mysql
-    ports:
-      - '4000:4000'
-  verification:
-    build: ./backend/verification-service
+    networks:
+      - kube_credential_network
+
+  verification-service:
+    build: ./backend/verification-service  # ← DIRECT PATH
+    container_name: verification_service
     environment:
       DB_HOST: mysql
-      DB_USER: root
-      DB_PASSWORD: example
-      DB_DATABASE: kube_credential
-      VERIFICATION_PORT: 5000
+      DB_USER: app_user
+      DB_PASSWORD: app_password
+      DB_NAME: kube_credential_db
+      PORT: 3002
+    ports:
+      - "3002:3002"
     depends_on:
       - mysql
-    ports:
-      - '5000:5000'
+    networks:
+      - kube_credential_network
+
   frontend:
     build: ./frontend
+    container_name: kube_credential_frontend
     ports:
-      - '8080:80'
+      - "3000:3000"
     depends_on:
-      - issuance
-      - verification
+      - issuance-service
+      - verification-service
+    networks:
+      - kube_credential_network
+
 volumes:
-  db_data:
+  mysql_data:
+
+networks:
+  kube_credential_network:
+    driver: bridge
