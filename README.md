@@ -1,8 +1,9 @@
 # 🧩 Kube Credential – Microservice Credential Issuance and Verification System
 
 **Author:** Carolene Prem Leela
+**Website:** https://carolenepremleela.github.io/Carolene-CV/
 **Email:** [carolenepremleela@gmail.com](mailto:carolenepremleela@gmail.com)
-**Role Applied:** Senior Full Stack Engineer
+**Job Role:** Senior Full Stack Engineer
 **Date:** October 2025
 
 ---
@@ -37,6 +38,74 @@ The system includes:
 ---
 
 ## ⚙️ System Requirements
+
+### IDE
+
+🥇 Visual Studio Code (VS Code) — Recommended
+
+✅ Why VS Code:
+Feature	Benefit for this project
+🧠 TypeScript IntelliSense	Autocompletion, type checking, refactor help
+⚙️ Integrated Terminal	Run Node, npm, Docker, kubectl in one place
+🐳 Docker & Kubernetes Extensions	Build, deploy, inspect containers & clusters
+☁️ AWS Toolkit	Deploy directly to EKS, manage credentials
+🧾 MySQL Support	Query/test your database via extensions
+🧩 Git + GitHub integration	Version control built-in
+🎨 Frontend + Backend in one workspace	One window for both microservices + React app
+
+🔧 Recommended VS Code Extensions
+
+| Extension             | Purpose                                             |
+| --------------------- | ----------------------------------------------------| 
+| ESLint                | Linting for clean, consistent TypeScript code       | 
+| Prettier              | Code formatting                                     | 
+| Docker                | Manage containers, images, and compose files        | 
+| Kubernetes            | Deploy and inspect pods, services, logs             | 
+| AWS Toolkit           | Deploy to EKS, view CloudWatch logs                 | 
+| MySQL (by Jun Han)    | Connect to and query your RDS/MySQL DB              | 
+| REST Client           | Test API endpoints directly inside VS Code          | 
+| React Developer Tools | Debug frontend efficiently                          | 
+| Thunder Client        | Lightweight Postman-like API testing inside VS Code | 
+
+💻 System Setup with VS Code
+1. Install Prerequisites
+
+Node.js 18+  
+
+Docker Desktop
+
+MySQL Server
+
+AWS CLI
+
+kubectl
+
+eksctl
+
+2. Open Workspace
+
+In VS Code:
+
+File → Open Folder → kube-credential/
+
+
+Then create a multi-root workspace:
+
+Add Folder to Workspace → backend/issuance
+Add Folder to Workspace → backend/verification
+Add Folder to Workspace → frontend
+
+3. Integrated Debug Configurations
+
+Use .vscode/launch.json:
+
+Launch Issuance Service on port 8081
+
+Launch Verification Service on port 8082
+
+Attach Docker container debug
+
+Start React frontend on port 5173
 
 ### Backend
 
@@ -327,6 +396,3 @@ Include in your final submission:
 * Clean architecture and clear documentation
 
 ---
-
-**Good luck and happy building!**
-*Developed by Carolene Prem Leela*
