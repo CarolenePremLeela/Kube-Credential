@@ -2,7 +2,7 @@
 // Files: backend/issuance-service/src/controllers/issuanceController.ts
 // -----------------------------
 import type { Request, Response } from 'express';
-import { CredentialModel } from '../../../shared/database/models/credential';
+import { CredentialModel } from '../../../shared/database/models/Credential';
 import { normalizeCredential, validateCredentialForCreate, parseWorkerId } from '../../../shared/utils/helpers';
 
 export const createIssuance = async (req: Request, res: Response) => {

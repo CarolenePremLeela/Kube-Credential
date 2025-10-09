@@ -2,8 +2,8 @@
 // Files: backend/verification-service/src/controllers/verificationController.ts
 // -----------------------------
 import type { Request, Response } from 'express';
-import { CredentialModel } from '../../../shared/database/models/credential';
-import { mapRowToCredential } from '../models/credential';
+import { CredentialModel } from '../../../shared/database/models/Credential';
+import { mapRowToCredential } from '../models/Credential';
 
 
 export const verifyById = async (req: Request, res: Response) => {

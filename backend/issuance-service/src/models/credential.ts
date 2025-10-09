@@ -1,7 +1,7 @@
 // -----------------------------
 // Files: backend/issuance-service/src/models/credential.ts
 // -----------------------------
-import type { CredentialResponse } from '@shared/types/credential';
+import type { CredentialResponse } from '../../../shared/types/Credential';
 
 export interface Credential {
   id: string;
