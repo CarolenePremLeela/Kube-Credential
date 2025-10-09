@@ -5,7 +5,7 @@
   "main": "dist/app.js",
   "scripts": {
     "dev": "ts-node src/app.ts",
-    "build": "tsc",
+    "build": "tsc && node -e \"console.log('Build successful'); require('fs').existsSync('./dist/app.js') ? console.log('app.js exists') : console.log('app.js missing')\"",
     "start": "node dist/app.js",
     "test": "jest"
   },

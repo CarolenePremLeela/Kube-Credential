@@ -125,7 +125,7 @@ Launch Verification Service on port 8082
 
 Attach Docker container debug
 
-Start React frontend on port 5173
+Start React frontend on port 3000
 
 ### Backend
 

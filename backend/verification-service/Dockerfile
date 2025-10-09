@@ -4,15 +4,11 @@ WORKDIR /app
 # Copy entire backend
 COPY . .
 
-# Install and build from service directory
+# Install dependencies
 WORKDIR /app/verification-service
-
-# Install dependencies first
 RUN npm install
 
-# Then build
-RUN npm run build
-
+# Use development mode
 EXPOSE 3002
 
-CMD ["npm", "start"]
+CMD ["npm", "run", "dev"]

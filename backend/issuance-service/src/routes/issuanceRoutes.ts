@@ -1,13 +1,8 @@
-// -----------------------------
-// Files: backend/issuance-service/src/routes/issuanceRoutes.ts
-// -----------------------------
-import express from 'express';
-import { createIssuance, listIssuances } from '../controllers/issuanceController';
+import { Router } from 'express';
+import { createIssuance } from '../controllers/issuanceController';
 
-const router = express.Router();
+const router = Router();
 
-router.post('/', createIssuance);
-router.get('/', listIssuances);
+router.post('/issue', createIssuance);
 
 export default router;
-

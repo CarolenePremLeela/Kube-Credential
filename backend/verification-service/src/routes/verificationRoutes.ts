@@ -1,12 +1,8 @@
-// -----------------------------
-// Files: backend/verification-service/src/routes/verificationRoutes.ts
-// -----------------------------
-import express from 'express';
-import { verifyById, listAll } from '../controllers/verificationController';
+import { Router } from 'express';
+import { verifyById } from '../controllers/verificationController';
 
-const router = express.Router();
+const router = Router();
 
-router.get('/:id', verifyById);
-router.get('/', listAll);
+router.post('/verify/:id', verifyById);
 
 export default router;
