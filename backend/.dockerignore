@@ -1,0 +1,12 @@
+# backend/issuance-service/.dockerignore
+node_modules
+npm-debug.log
+dist
+.git
+.env
+.nyc_output
+coverage
+.DS_Store
+src
+*.ts
+!*.d.ts
