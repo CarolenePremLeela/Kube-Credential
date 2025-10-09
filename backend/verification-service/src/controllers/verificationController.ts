@@ -2,7 +2,7 @@
 // Files: backend/verification-service/src/controllers/verificationController.ts
 // -----------------------------
 import type { Request, Response } from 'express';
-import { CredentialModel } from '@shared/database/models/credential';
+import { CredentialModel } from '../../../shared/database/models/credential';
 import { mapRowToCredential } from '../models/credential';
 
 

@@ -17,7 +17,7 @@ services:
   issuance-service:
     build:
       context: ./backend
-      dockerfile: issuance-service/Dockerfile
+      dockerfile: issuance-service/Dockerfile  # ← CORRECT PATH
     container_name: issuance_service
     environment:
       DB_HOST: mysql
@@ -35,7 +35,7 @@ services:
   verification-service:
     build:
       context: ./backend
-      dockerfile: verification-service/Dockerfile
+      dockerfile: verification-service/Dockerfile  # ← CORRECT PATH
     container_name: verification_service
     environment:
       DB_HOST: mysql
