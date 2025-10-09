@@ -15,7 +15,9 @@ services:
       - kube_credential_network
 
   issuance-service:
-    build: ./backend/issuance-service  # ← DIRECT PATH
+    build:
+      context: ./backend
+      dockerfile: issuance-service/Dockerfile
     container_name: issuance_service
     environment:
       DB_HOST: mysql
@@ -31,7 +33,9 @@ services:
       - kube_credential_network
 
   verification-service:
-    build: ./backend/verification-service  # ← DIRECT PATH
+    build:
+      context: ./backend
+      dockerfile: verification-service/Dockerfile
     container_name: verification_service
     environment:
       DB_HOST: mysql

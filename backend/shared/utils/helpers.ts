@@ -1,5 +1,10 @@
 // File: backend/shared/utils/helpers.ts
-import type { Credential } from '../types/credential';
+interface Credential {
+  name?: string;
+  kubeConfig?: string;
+  email?: string;
+  metadata?: any;
+}
 
 export const isValidYaml = (str: string) => {
   // lightweight check — doesn't parse but checks for expected kubeconfig keys

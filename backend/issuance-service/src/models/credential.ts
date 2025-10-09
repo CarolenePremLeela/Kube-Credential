@@ -1,7 +1,16 @@
 // -----------------------------
 // Files: backend/issuance-service/src/models/credential.ts
 // -----------------------------
-import type { Credential } from '../../shared/types/credential';
+import type { CredentialResponse } from '@shared/types/credential';
+
+export interface Credential {
+  id: string;
+  name: string;
+  kubeConfig: string;
+  metadata?: any;
+  createdAt: Date;
+  updatedAt?: Date;
+}
 
 // thin adapter that maps DB rows to shared type
 export const mapRowToCredential = (row: any): Credential => ({
