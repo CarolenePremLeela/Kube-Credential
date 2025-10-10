@@ -7,7 +7,18 @@ const app = express();
 const PORT = process.env.PORT || 3002;
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: [
+    'http://localhost:3000',  // ← Add port 3003
+    'http://127.0.0.1:3000', 
+    'http://172.0.0.1:3000',
+    'http://localhost:3003',
+    'http://127.0.0.1:3003'
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
 
 // Initialize database

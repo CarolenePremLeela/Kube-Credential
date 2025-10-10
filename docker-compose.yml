@@ -55,6 +55,10 @@ services:
     container_name: kube_credential_frontend
     ports:
       - "3000:3000"
+    environment:
+      - VITE_PORT=3000
+      - VITE_ISSUANCE_API_URL=http://issuance-service:3001
+      - VITE_VERIFICATION_API_URL=http://verification-service:3002
     depends_on:
       - issuance-service
       - verification-service

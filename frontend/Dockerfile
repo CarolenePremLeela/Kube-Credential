@@ -5,13 +5,11 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 
-# Copy source code
+# Copy source code including .env files
 COPY . .
 
-# Build the project
-RUN npm run build
+# Expose the port (will use 3003 from .env)
+EXPOSE 3003
 
-# Use preview instead of dev for production
-EXPOSE 3000
-
-CMD ["npm", "run", "preview"]
+# Use dev server with environment configuration
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]

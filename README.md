@@ -23,9 +23,9 @@ It demonstrates scalable, containerized deployment using **Docker**, **TypeScrip
 ## Run locally (docker-compose)
 
 1. `docker-compose up --build`
-2. Frontend will be available at `http://localhost:8080`
-3. Issuance at `http://localhost:4000/issuance`
-4. Verification at `http://localhost:5000/verification`
+2. Frontend will be available at `http://localhost:3000`
+3. Issuance at `http://localhost:3001/issuance`
+4. Verification at `http://localhost:3002/verification`
 
 ## Notes & next steps:
 - Replace example DB credentials before deploying to production.
@@ -119,9 +119,9 @@ Add Folder to Workspace → frontend
 
 Use .vscode/launch.json:
 
-Launch Issuance Service on port 8081
+Launch Issuance Service on port 3001
 
-Launch Verification Service on port 8082
+Launch Verification Service on port 3002
 
 Attach Docker container debug
 
@@ -277,8 +277,8 @@ docker-compose up --build
 This spins up:
 
 * MySQL container
-* Issuance API (port 8081)
-* Verification API (port 8082)
+* Issuance API (port 3001)
+* Verification API (port 3002)
 
 ---
 
