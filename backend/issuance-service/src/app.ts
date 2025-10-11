@@ -21,13 +21,6 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// Initialize database
-initializeDatabase().then(() => {
-  console.log('Issuance Service: Database initialized');
-}).catch(error => {
-  console.error('Issuance Service: Database initialization failed', error);
-});
-
 // Routes
 app.use('/api', issuanceRoutes);
 
@@ -39,8 +32,26 @@ app.get('/health', (req, res) => {
     timestamp: new Date().toISOString()
   });
 });
+// Initialize database with retry logic
+const startServer = async () => {
+  try {
+    console.log('Initializing database connection...');
+    await initializeDatabase();
+    console.log('Database initialized successfully');
+    
+    // Import routes after DB is ready
+    const routes = await import('./routes/issuanceRoutes'); // or verificationRoutes
+    app.use('/api', routes.default);
+    
+    app.listen(PORT, () => {
+      console.log(`Issuance Service running on port ${PORT}`);
+      console.log(`Health: http://localhost:${PORT}/health`);
+    });
+    
+  } catch (error) {
+    console.error('Failed to start server:', error);
+    process.exit(1);
+  }
+};
 
-app.listen(PORT, () => {
-  console.log(`Issuance Service running on port ${PORT}`);
-  console.log(`Health check: http://localhost:${PORT}/health`);
-});
+startServer();

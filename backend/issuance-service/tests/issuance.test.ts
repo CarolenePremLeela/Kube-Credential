@@ -20,3 +20,4 @@ describe('issuance routes (sanity)', () => {
     expect([200, 500]).toContain(res.status); // depends on DB init in test environment
   });
 });
+

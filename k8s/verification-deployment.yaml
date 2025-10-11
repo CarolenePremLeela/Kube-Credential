@@ -17,7 +17,7 @@ spec:
           image: verification-service:latest
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 5000
+            - containerPort: 3002
           env:
             - name: DB_HOST
               value: mysql
